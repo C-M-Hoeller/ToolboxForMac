@@ -1,5 +1,5 @@
 #!/bin/zsh
-# Global Variables
+#----------------------------Global Variables-----------------------------------
 # Cask Formulae
 declare -a OfficeFormulae=("typora")
 declare -a CloudFormulae=("nextcloud")
@@ -10,6 +10,7 @@ declare -a DeveloperFormulae=("visual-studio-code" "jetbrains-toolbox" "github" 
 declare -a BrowserFormulae=("google-chrome" "firefox" "cleanmymac")
 declare -a UtilitiesFormulae=("numi" "oversight" "rocket" "hiddenbar" "monitorcontrol")
 
+#--------------------------------Functions--------------------------------------
 # brew cask install
 bci(){
     brew cask install $@
@@ -38,8 +39,7 @@ check(){
         esac
     done
 }
-
-### CASK Formulae ###
+#-------------------------------CASK Formulae-----------------------------------
 # Office / Documentation
 install_office(){
     for formula in "${OfficeFormulae[@]}"
@@ -151,7 +151,19 @@ install_utilities_individually(){
         check $formula
     done
 }
-###--------------####
+#-------------------------------------------------------------------------------
+# Install Software Packages
+install_software(){
+    check "Office / Documentation"         $OfficeFormulae         "install_office"        "install_office_individually"
+    check "Cloud"                          $CloudFormulae          "install_cloud"         "install_cloud_individually"
+    check "Messenger / Social Networks"    $MessengerFormulae      "install_messenger"     "install_messenger_individually"
+    check "Music / Video / Media"          $MediaFormulae          "install_media"         "install_media_individually"
+    check "Design"                         $DesignFormulae         "install_design"        "install_desgin_individually"
+    check "Development / IT-Tools"         $DeveloperFormulae      "install_development"   "install_development_individually"
+    check "Browser"                        $BrowserFormulae        "install_browser"       "install_browser_individually"
+    check "Utilities"                      $UtilitiesFormulae      "install_utilities"     "install_utilities_individually"
+}
+
 
 # Xcode Monokai Theme
 install_monokai_xcode_theme(){
@@ -179,7 +191,6 @@ install_monokai_xcode_theme(){
 add_spacer(){
     while true; do
         read -p "How many Spacer do you want? (The Number has to be <= 10): " count
-        echo $count
         for i in $(eval echo "{1..$count}")
         do
             defaults write com.apple.dock persistent-apps -array-add '{"tile-type"="spacer-tile";}'
@@ -190,6 +201,7 @@ add_spacer(){
     done
 }
 
+#--------------------------------Programm---------------------------------------
 echo ""
 echo "Welcome to SpiritLabs MacOS reinstall script! (SMRS)"
 echo "This Script is for everyone who wants a fast solution to install a lot of Apps and Tools after reinstall MacOS"
@@ -197,33 +209,37 @@ echo "To achieve this we are using some other tools, like Brew, Oh-My-Zsh and mo
 echo "The full Documentation is on our Github Repositories README"
 echo ""
 echo "Let's start..."
-echo "First we want to install Brew and Cask"
 
-echo "Do you want to install Brew?"
-select yn in "Yes" "No"; do
-    case $yn in
-        Yes ) sh -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"; break;;
-        No ) break;;
-    esac
-done
-echo "Do you want to install Cask?"
-select yn in "Yes" "No"; do
-    case $yn in
-        Yes ) brew install cask; break;;
-        No ) break;;
-    esac
-done
+which -s brew
+if [[ $? != 0 ]] ; then
+    echo "Do you want to install Brew?"
+    select yn in "Yes" "No"; do
+        case $yn in
+            Yes ) sh -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"; break;;
+            No ) brewCheck = false; break;;
+        esac
+    done
+fi
 
-echo "Now we want to install some Software"
-echo ""
-check "Office / Documentation"         $OfficeFormulae         "install_office"        "install_office_individually"
-check "Cloud"                          $CloudFormulae          "install_cloud"         "install_cloud_individually"
-check "Messenger / Social Networks"    $MessengerFormulae      "install_messenger"     "install_messenger_individually"
-check "Music / Video / Media"          $MediaFormulae          "install_media"         "install_media_individually"
-check "Design"                         $DesignFormulae         "install_design"        "install_desgin_individually"
-check "Development / IT-Tools"         $DeveloperFormulae      "install_development"   "install_development_individually"
-check "Browser"                        $BrowserFormulae        "install_browser"       "install_browser_individually"
-check "Utilities"                      $UtilitiesFormulae      "install_utilities"     "install_utilities_individually"
+if ! brew info cask &>/dev/null; then
+    echo "Do you want to install Cask?"
+    select yn in "Yes" "No"; do
+        case $yn in
+            Yes ) brew install cask; break;;
+            No ) break;;
+        esac
+    done
+fi
+
+if brew info cask &>/dev/null; then
+    echo "Do you want to install Software?"
+    select yn in "Yes" "No"; do
+        case $yn in
+            Yes ) install_software; break;;
+            No ) break;;
+        esac
+    done
+fi
 
 echo "Next we want to install Oh-My-Zsh"
 echo "Do you want to install Oh-My-Zsh?"
