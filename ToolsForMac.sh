@@ -1,5 +1,6 @@
-#!/bin/zsh
+#!/bin/sh
 #----------------------------Global Variables-----------------------------------
+declare -a ShellTools=("tldr" "mc" "fd" "ripgrep" "fzf" "tree") 
 # Cask Formulae
 declare -a OfficeFormulae=("typora" "slite" "clickup" "ticktick" "airtable")
 declare -a CloudFormulae=("nextcloud")
@@ -73,6 +74,13 @@ install_software(){
     check "Utilities"                      "${UtilitiesFormulae[@]}"
     check "Extras"                         "${ExtraFormulae[@]}"
 }
+
+install_shell_tools(){
+    for t in "${ShellTools[@]}"
+    do
+        brew install $t
+    done
+}
 #-------------------------------------------------------------------------------
 
 # Xcode Monokai Theme
@@ -131,7 +139,16 @@ if [[ $? != 0 ]] ; then
     done
 fi
 
-if brew info cask &>/dev/null; then
+echo "Do you want some helpful Shell Tools?"
+echo "${ShellTools[@]}"
+select yn in "Yes" "No"; do
+    case $yn in
+        Yes ) install_shell_tools; break;;
+        No ) break;;
+    esac
+done
+
+if ! brew info cask &>/dev/null; then
     echo "Do you want to install Software?"
     select yn in "Yes" "No"; do
         case $yn in
@@ -174,3 +191,8 @@ select yn in "Yes" "No"; do
         No ) break;;
     esac
 done
+
+if [! brew info cask &>/dev/null]; 
+	then echo "1"
+    else echo "2"
+fi
