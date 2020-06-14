@@ -1,4 +1,4 @@
-# Spiritlabs Toolbox For Mac
+# Toolbox For Mac
 
 This is a script for fast reinstall software after reinstall MacOS.
 I also added some other features. E.g. a Monokai theme for Xcode or a space adder for the  MacOS Dock.
