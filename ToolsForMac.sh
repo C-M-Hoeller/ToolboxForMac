@@ -139,16 +139,20 @@ if [[ $? != 0 ]] ; then
     done
 fi
 
-echo "Do you want some helpful Shell Tools?"
-echo "${ShellTools[@]}"
-select yn in "Yes" "No"; do
-    case $yn in
-        Yes ) install_shell_tools; break;;
-        No ) break;;
-    esac
-done
+which -s brew
+if [[ $? == 0 ]]; then
+    echo "Do you want some helpful Shell Tools?"
+    echo "${ShellTools[@]}"
+    select yn in "Yes" "No"; do
+        case $yn in
+            Yes ) install_shell_tools; break;;
+            No ) break;;
+        esac
+    done
+fi
 
-if ! brew info cask &>/dev/null; then
+which -s brew
+if [[ $? == 0 ]]; then
     echo "Do you want to install Software?"
     select yn in "Yes" "No"; do
         case $yn in
@@ -191,8 +195,3 @@ select yn in "Yes" "No"; do
         No ) break;;
     esac
 done
-
-if [! brew info cask &>/dev/null]; 
-	then echo "1"
-    else echo "2"
-fi
