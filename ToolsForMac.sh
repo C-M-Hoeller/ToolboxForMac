@@ -1,14 +1,15 @@
 #!/bin/zsh
 #----------------------------Global Variables-----------------------------------
 # Cask Formulae
-declare -a OfficeFormulae=("typora")
+declare -a OfficeFormulae=("typora" "slite" "clickup" "ticktick" "airtable")
 declare -a CloudFormulae=("nextcloud")
-declare -a MessengerFormulae=("whatsapp" "discord")
+declare -a MessengerFormulae=("whatsapp" "discord" "biscuit")
 declare -a MediaFormulae=("spotify" "vlc")
 declare -a DesignFormulae=("figma")
 declare -a DeveloperFormulae=("visual-studio-code" "jetbrains-toolbox" "github" "postman" "teamviewer" "iterm2" "parallels" "docker" "wireshark" "coderunner")
 declare -a BrowserFormulae=("google-chrome" "firefox" "cleanmymac")
 declare -a UtilitiesFormulae=("numi" "oversight" "rocket" "hiddenbar" "monitorcontrol")
+declare -a ExtraFormulae=("fork" "setapp" "visual-studio" "calibre" "unetbootin" "drawio" "responsively" "azure-data-studio" "filezilla" "logitech-options" "itsycal" "endpoint_security_vpn" "xtrafinder" "divvy")
 
 #--------------------------------Functions--------------------------------------
 # brew cask install
@@ -151,6 +152,20 @@ install_utilities_individually(){
         check $formula
     done
 }
+
+# ExtraFormulae
+install_extras(){
+    for formula in "${ExtraFormulae[@]}"
+    do
+        bci $formula
+    done
+}
+install_extras_individually(){
+    for formula in "${ExtraFormulae[@]}"
+    do
+        check $formula
+    done
+}
 #-------------------------------------------------------------------------------
 # Install Software Packages
 install_software(){
@@ -162,6 +177,7 @@ install_software(){
     check "Development / IT-Tools"         $DeveloperFormulae      "install_development"   "install_development_individually"
     check "Browser"                        $BrowserFormulae        "install_browser"       "install_browser_individually"
     check "Utilities"                      $UtilitiesFormulae      "install_utilities"     "install_utilities_individually"
+    check "Extras"                         $ExtraFormulae          "install_extras"        "install_extras_individually"
 }
 
 
@@ -183,14 +199,14 @@ install_monokai_xcode_theme(){
 
     if [ -f ~/Library/Developer/Xcode/UserData/FontAndColorThemes/Monokai.xccolortheme ]; 
         then echo "Theme installed"
-        else echo "Something went wrong, You can try to install it manually https://gist.github.com/a-voronov/f99782561021e17537db82aaf1e55d97"
+        else echo "Something went wrong, you can try to installing it manually https://gist.github.com/a-voronov/f99782561021e17537db82aaf1e55d97"
     fi
 }
 
 # Add Spacer
 add_spacer(){
     while true; do
-        read -p "How many Spacer do you want? (The Number has to be <= 10): " count
+        read -p "How many spacer do you want? (The Number has to be <= 10): " count
         for i in $(eval echo "{1..$count}")
         do
             defaults write com.apple.dock persistent-apps -array-add '{"tile-type"="spacer-tile";}'
@@ -204,9 +220,9 @@ add_spacer(){
 #--------------------------------Programm---------------------------------------
 echo ""
 echo "Welcome to SpiritLabs MacOS reinstall script! (SMRS)"
-echo "This Script is for everyone who wants a fast solution to install a lot of Apps and Tools after reinstall MacOS"
-echo "To achieve this we are using some other tools, like Brew, Oh-My-Zsh and more."
-echo "The full Documentation is on our Github Repositories README"
+echo "This script is for everyone who wants a fast solution for installing  multiple apps and tools after fresh macOS installation."
+echo "To achieve this we are using some third-party tools, like Brew, Oh-My-Zsh and more."
+echo "The full documentation is on our Github repository README"
 echo ""
 echo "Let's start..."
 
@@ -259,7 +275,7 @@ select yn in "Yes" "No"; do
     esac
 done
 
-echo "Do you want a Monokai Theme for your Xcode"
+echo "Do you want to install a monokai theme for your Xcode?"
 select yn in "Yes" "No"; do
     case $yn in
         Yes ) install_monokai_xcode_theme; break;;
